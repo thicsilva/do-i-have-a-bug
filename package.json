@@ -1,0 +1,55 @@
+{
+  "name": "do-i-have-a-bug",
+  "displayName": "Do I have a bug?",
+  "description": "A code checker using the ChatGPT API",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "do-i-have-a-bug.checkCode",
+        "title": "Check if code has a bug"
+      }
+    ],
+    "configuration":{
+      "title": "Do I Have A Bug?",
+      "properties": {
+        "do-i-have-a-bug.openAiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Enter with your OpenAi API Key to use the extension as a code reviewer"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {    
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.82.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.3.4",
+    "eslint": "^8.47.0",
+    "glob": "^10.3.3",    
+    "mocha": "^10.2.0",    
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "openai": "^4.10.0"
+  }
+}
