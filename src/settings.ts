@@ -1,25 +1,39 @@
 import * as vscode from 'vscode';
 export class Settings {
-    openAiApiKey:string="";
-}
+    private _openAiApiKey: string;
+    private readonly configurationUpdateEventEmitter = new vscode.EventEmitter<void>();
 
-function getSetting<TSetting>(key: string | undefined, value: TSetting, configuration: vscode.WorkspaceConfiguration): TSetting {
-    
-    if (key !== undefined && !(value instanceof Settings)) {
-        return configuration.get<TSetting>(key, value);
+    public constructor() {
+
+        const settings = vscode.workspace.getConfiguration('do-i-have-a-bug', vscode.window.activeTextEditor?.document?.uri);
+        this._openAiApiKey = settings.get<string>("openAiApiKey", "");
+
+        vscode.workspace.onDidChangeConfiguration(() => {
+            this.initializeSettings();
+            this.configurationUpdateEventEmitter.fire();
+        });
+
+        vscode.window.onDidChangeActiveTextEditor(e => {
+            if (e) {
+                this.initializeSettings();
+                this.configurationUpdateEventEmitter.fire();
+            }
+        });
+
+
     }
-    
-    for (const property in value) {
-        const subKey = key !== undefined ? `${key}.${property}` : property;
-        value[property] = getSetting(subKey, value[property], configuration);
+
+    private initializeSettings() {
+        const settings = vscode.workspace.getConfiguration('do-i-have-a-bug', vscode.window.activeTextEditor?.document?.uri);
+        this._openAiApiKey = settings.get<string>("openAiApiKey", "");
     }
 
-    return value;
-}
+    public get onDidChangeConfiguration(): vscode.Event<void> {
+        return this.configurationUpdateEventEmitter.event;
+    }
 
-export function getSettings(): Settings {
-    const configuration: vscode.WorkspaceConfiguration =
-        vscode.workspace.getConfiguration('DoIHaveABug');
+    public get openAiApiKey() {
+        return this._openAiApiKey;
+    }
 
-    return getSetting(undefined, new Settings(), configuration);
 }

@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import { getSettings } from './settings';
+import { ExtensionContext, commands, } from 'vscode';
+import { Settings } from './settings';
 import { CodeVerification } from './code-verification';
 
 
@@ -9,10 +9,9 @@ import { CodeVerification } from './code-verification';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export async function activate(context: vscode.ExtensionContext) {
+export async function activate(context: ExtensionContext) {
 
-	const settings = getSettings();
-	const codeVerification = new CodeVerification(settings);
+	const codeVerification = new CodeVerification(new Settings());
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -23,12 +22,17 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	let checkCode = vscode.commands.registerCommand('do-i-have-a-bug.checkCode', async () => {
-		await codeVerification.execute();
+	let checkFile = commands.registerCommand('do-i-have-a-bug.checkFile', async () => {
+
+		await codeVerification.executeOnFile();
+	});
+
+	let checkSelectedCode = commands.registerCommand('do-i-have-a-bug.checkSelectedCode', async () => {
+		await codeVerification.executeOnSelection();
 
 	});
 
-	context.subscriptions.push(checkCode);
+	context.subscriptions.push(checkFile, checkSelectedCode);
 }
 
 // This method is called when your extension is deactivated

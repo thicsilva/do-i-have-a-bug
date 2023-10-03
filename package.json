@@ -14,11 +14,18 @@
   "contributes": {
     "commands": [
       {
-        "command": "do-i-have-a-bug.checkCode",
-        "title": "Check if code has a bug"
+        "category": "Do I Have a Bug?",
+        "command": "do-i-have-a-bug.checkFile",
+        "title": "Check if code in file has a bug."
+      },
+      {
+        "category": "Do I Have a Bug?",
+        "command": "do-i-have-a-bug.checkSelectedCode",
+        "title": "Check if selected code has a bug."
       }
     ],
-    "configuration":{
+    "configuration": {
+      "type": "object",
       "title": "Do I Have A Bug?",
       "properties": {
         "do-i-have-a-bug.openAiApiKey": {
@@ -37,7 +44,7 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"
   },
-  "devDependencies": {    
+  "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.82.0",
@@ -45,8 +52,8 @@
     "@typescript-eslint/parser": "^6.4.1",
     "@vscode/test-electron": "^2.3.4",
     "eslint": "^8.47.0",
-    "glob": "^10.3.3",    
-    "mocha": "^10.2.0",    
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {

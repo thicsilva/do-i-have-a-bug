@@ -1,31 +1,44 @@
 import OpenAI, { ClientOptions } from "openai";
 import * as vscode from 'vscode';
-import { CompletionCreateParamsNonStreaming } from "openai/resources";
 import { Settings } from "./settings";
 import { ChatCompletionCreateParamsNonStreaming } from "openai/resources/chat";
+import { ResponseView } from "./response-view";
 
 export class CodeVerification {
     constructor(private settings: Settings) {
     }
 
-    async execute(): Promise<void> {
-        const apiKey  = this.settings.openAiApiKey;
-        
+    async executeOnFile() {
+        const document = vscode.window.activeTextEditor?.document;
+        const text = document?.getText();
+        const language = document?.languageId;
+        return await this.execute(text, language);
+    }
+
+    async executeOnSelection() {
+        const document = vscode.window.activeTextEditor?.document;
+        const selection = vscode.window.activeTextEditor?.selection;
+        if (selection && !selection.isEmpty) {
+            const text = document?.getText(new vscode.Range(selection.start, selection.end));
+            const language = document?.languageId;
+            this.execute(text, language);
+        } else {
+            vscode.window.showErrorMessage('Selection is empty');
+        }
+    }
+
+    private async execute(text: string | undefined, language: string | undefined): Promise<void> {
+
+        if (!text || !text.trim()) {
+            vscode.window.showErrorMessage('Empty string is not allowed.');
+            return;
+        }
+
+        const apiKey = this.settings.openAiApiKey;
         if (!apiKey) {
             vscode.window.showErrorMessage("You need to configure your OpenAI API Key before use this extension functionalities");
             return;
         }
-
-        console.log(vscode.window.activeTextEditor?.document.getText());
-        const document = vscode.window.activeTextEditor?.document;
-        const text = document?.getText();
-        const language = document?.languageId;
-
-        if (!text || !text.trim()) {
-            vscode.window.showErrorMessage('Empty string is not allowed to use in the context.');
-            return;
-        }
-
 
         const clientOptions: ClientOptions = {
             apiKey,
@@ -52,34 +65,26 @@ export class CodeVerification {
             max_tokens: 1024
         };
         try {
-            const response = await openai.chat.completions.create(body);
-            const content = this.formatCode(response.choices[0].message.content);
-            if (content) {
-                const panel = vscode.window.createOutputChannel('Do I Have A Bug?', language);
-                panel.append(content);
-                panel.show();
-            }
+            vscode.window.withProgress({
+                location: vscode.ProgressLocation.Window,
+                cancellable: false,
+                title: 'Checking if your code has a bug...'
+            }, async (progress) => {
+
+                progress.report({ increment: 0 });
+
+                const response = await openai.chat.completions.create(body);
+                const content = response.choices[0].message;
+                if (content) {
+                    const panel = new ResponseView(language ?? '');
+                    panel.render(content);
+                }
+                progress.report({ increment: 100 });
+            });
 
         } catch (err) {
             vscode.window.showErrorMessage(`Failed to get api response: ${err}`);
         }
-    }
-
-    private formatCode(content: string | null): string {
-        if (!content) {
-            return '';
-        }
-
-        const reg = /`{3,}(\w+)?/g;
-        const splited = content.split(reg);
-        for (let i=0;i<splited.length;i++){
-            if (splited[i]===undefined)
-                {
-                    return splited[i-1];
-                }
-        }
-
-        return '';
     }
 
 }
