@@ -2,7 +2,9 @@
   "name": "do-i-have-a-bug",
   "displayName": "Do I have a bug?",
   "description": "A code checker using the ChatGPT API",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "author": "Thiago da Costa Silva",
+  "icon": "images/logo.jpg",  
   "engines": {
     "vscode": "^1.82.0"
   },
@@ -24,14 +26,37 @@
         "title": "Check if selected code has a bug."
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "do-i-have-a-bug.checkSelectedCode",
+          "when": "editorHasSelection"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "do-i-have-a-bug.checkFile",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "do-i-have-a-bug.checkSelectedCode",
+          "when": "editorTextFocus && editorHasSelection"
+        }
+      ]
+    },
     "configuration": {
       "type": "object",
-      "title": "Do I Have A Bug?",
+      "title": "Do I Have a Bug?",
       "properties": {
         "do-i-have-a-bug.openAiApiKey": {
           "type": "string",
           "default": "",
           "description": "Enter with your OpenAi API Key to use the extension as a code reviewer"
+        },
+        "do-i-have-a-bug.openAiChatModel": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "enum": ["gpt-3.5-turbo", "gpt-4"]
         }
       }
     }

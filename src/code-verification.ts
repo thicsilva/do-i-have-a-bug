@@ -5,7 +5,7 @@ import { ChatCompletionCreateParamsNonStreaming } from "openai/resources/chat";
 import { ResponseView } from "./response-view";
 
 export class CodeVerification {
-    constructor(private settings: Settings) {
+    constructor() {
     }
 
     async executeOnFile() {
@@ -34,7 +34,7 @@ export class CodeVerification {
             return;
         }
 
-        const apiKey = this.settings.openAiApiKey;
+        const apiKey = Settings.getInstance.openAiApiKey;
         if (!apiKey) {
             vscode.window.showErrorMessage("You need to configure your OpenAI API Key before use this extension functionalities");
             return;
@@ -46,12 +46,12 @@ export class CodeVerification {
         const openai = new OpenAI(clientOptions);
 
         const body: ChatCompletionCreateParamsNonStreaming = {
-            model: 'gpt-3.5-turbo',
+            model: Settings.getInstance.openAiChatModel,
             temperature: 0,
             messages: [
                 {
                     role: "system",
-                    content: "You will be provided with a piece of code, and your task is to find and fix bugs in it. Wrap only if the provided code need to fix, and put your code examples between <code></code> tags. Don't include any explanations in your responses. "
+                    content: "You will be provided with a piece of code, and your task is to find and fix bugs in it. Wrap only if the provided code need to fix, and put your code examples between <code></code> tags."
                 },
                 {
                     role: "user",
@@ -59,10 +59,12 @@ export class CodeVerification {
                 },
                 {
                     role: "assistant",
-                    content: text
+                    content: `<code>${text}</code>`
                 }
             ],
-            max_tokens: 1024
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            max_tokens: 1024,
+
         };
         try {
             vscode.window.withProgress({
