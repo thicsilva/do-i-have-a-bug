@@ -3,6 +3,7 @@
   "displayName": "Do I have a bug?",
   "description": "A code checker using the ChatGPT API",
   "version": "1.0.0",
+  "publisher": "thicsilva",
   "author": "Thiago da Costa Silva",
   "icon": "images/logo.jpg",  
   "engines": {
@@ -11,6 +12,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thicsilva/do-i-have-a-bug"
+  },
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
