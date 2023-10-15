@@ -41,16 +41,16 @@ export class ResponseView {
         const content = response?.content;
         if (content) {
             if (content.indexOf("<code>") > -1) {
-                return this.getTextFromGpt4Response(content);
+                return this.getTextFromTagsResponse(content);
             }
 
-            return this.getTextFromGpt3Response(content);
+            return this.getTextFromQuotesResponse(content);
         }
 
         return '';
     }
 
-    private getTextFromGpt3Response(response: string): string {
+    private getTextFromQuotesResponse(response: string): string {
         const codeReg = /`{3}([\s\S]+?)`{3}/gim;
         const text = codeReg.exec(response);
         if (text) {
@@ -61,7 +61,7 @@ export class ResponseView {
         return '';
     }
 
-    private getTextFromGpt4Response(response: string): string {
+    private getTextFromTagsResponse(response: string): string {
         const codeReg = /<code>([\s\S]+?)<\/code>/gim;
         const text = codeReg.exec(response);
         if (text) {
