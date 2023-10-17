@@ -55,7 +55,7 @@ export class CodeVerification {
                 },
                 {
                     role: "user",
-                    content: `I'm writing a code with ${language} language and I need your help. Do I have a bug?`
+                    content: `I'm writing a program in ${language} and I need your help. Do I have a bug?`
                 },
                 {
                     role: "assistant",
@@ -69,7 +69,7 @@ export class CodeVerification {
         try {
             vscode.window.withProgress({
                 location: vscode.ProgressLocation.Window,
-                cancellable: false,
+                cancellable: true,
                 title: 'Checking if your code has a bug...'
             }, async (progress) => {
 
