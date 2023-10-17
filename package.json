@@ -2,10 +2,10 @@
   "name": "do-i-have-a-bug",
   "displayName": "Do I have a bug?",
   "description": "A code checker using the ChatGPT API",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "thicsilva",
   "author": "Thiago da Costa Silva",
-  "icon": "images/logo.jpg",  
+  "icon": "images/logo.jpg",
   "engines": {
     "vscode": "^1.82.0"
   },
@@ -61,7 +61,10 @@
         "do-i-have-a-bug.openAiChatModel": {
           "type": "string",
           "default": "gpt-3.5-turbo",
-          "enum": ["gpt-3.5-turbo", "gpt-4"]
+          "enum": [
+            "gpt-3.5-turbo",
+            "gpt-4"
+          ]
         }
       }
     }
