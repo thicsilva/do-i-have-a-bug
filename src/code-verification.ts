@@ -51,11 +51,12 @@ export class CodeVerification {
             messages: [
                 {
                     role: "system",
-                    content: "You will be provided with a piece of code, and your task is to find and fix bugs in it. Wrap only if the provided code need to fix, and put your code examples between <code></code> tags."
+                    content: `You will be provided with a piece of code, and your task is to find and fix bugs in it. 
+                    Please only respond if the code provided needs to be corrected, and enclose your code examples between <code></code> tags.`
                 },
                 {
                     role: "user",
-                    content: `I'm writing a program in ${language} and I need your help. Do I have a bug?`
+                    content: `I'm writing a program in ${language} and I need your help. Do I have a bug in my code?`
                 },
                 {
                     role: "assistant",
