@@ -74,15 +74,20 @@ export class CodeVerification {
                 title: 'Checking if your code has a bug...'
             }, async (progress) => {
 
-                progress.report({ increment: 0 });
+                try{
+                    progress.report({ increment: 0 });
 
-                const response = await openai.chat.completions.create(body);
-                const content = response.choices[0].message;
-                if (content) {
-                    const panel = new ResponseView(language ?? '');
-                    panel.render(content);
+                    const response = await openai.chat.completions.create(body);
+                    const content = response.choices[0].message;
+                    if (content) {
+                        const panel = new ResponseView(language ?? '');
+                        panel.render(content);
+                    }
+                    progress.report({ increment: 100 });
+                } catch(err){
+                    vscode.window.showErrorMessage(`Failed to get api response: ${err}`);
                 }
-                progress.report({ increment: 100 });
+               
             });
 
         } catch (err) {
